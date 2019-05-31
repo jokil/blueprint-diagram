@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+       xsi:schemaLocation="
+         http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+         http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+         http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.1.0.xsd">
+
+  <cm:property-placeholder id="testcase-cfg" persistent-id="testcase"/>
+
+  <camelContext id="first-context" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="sample-first-route">
+      <from uri="active-mq:{{first}}"/>
+      <wireTap uri="active-mq:{{second.a}}"/>
+      <to uri="active-mq:{{second.b}}"/>
+    </route>
+  </camelContext>
+
+  <camelContext id="second-context" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="second-route-a">
+      <from uri="active-mq:{{second.a}}"/>
+      <to uri="active-mq:{{third}}"/>
+    </route>
+    <route id="second-route-b">
+      <from uri="active-mq:{{second.b}}"/>
+      <to uri="direct:second-c"/>
+    </route>
+    <route id="second-route-c">
+      <from uri="direct:second-c"/>
+      <to uri="active-mq:{{third}}"/>
+    </route>
+  </camelContext>
+
+  <camelContext id="third-context" xmlns="http://camel.apache.org/schema/blueprint">
+    <route id="third-route">
+      <from uri="active-mq:{{third}}"/>
+      <to uri="file:{{sample.file}}"/>
+    </route>
+  </camelContext>
+
+</blueprint>
