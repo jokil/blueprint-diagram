@@ -11,7 +11,7 @@ object CfgUtil {
             file.readLines()
                     .filter { it.isNotBlank() && it.contains("=") }
                     .forEach {
-                        val pair = CfgUtil.resolveParam(envMap, it)
+                        val pair = resolveParam(envMap, it)
                         cfgMap[file.name]?.set(pair.first, pair.second)
                     }
         }

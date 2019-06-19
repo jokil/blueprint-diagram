@@ -44,7 +44,24 @@ object XmlUtil {
         )
     }
 
-    private fun toDotEntity(uri: String) = CamelContext.Route.DotEntity(name = uri.substringBefore("?"))
+    private fun toDotEntity(uri: String): CamelContext.Route.DotEntity {
+        val relevantPart = uri.substringBefore("?")
+        val topicFixed = virtualTopicFix(relevantPart)
+        return CamelContext.Route.DotEntity(name = topicFixed)
+    }
+
+    /**
+     * Remove Consumer.{consumer-name} from VirtualTopic-consumers,
+     * so that they are properly connected to the producer in diagram.
+     */
+    private fun virtualTopicFix(uri: String): String {
+        val virtualTopicPattern = Pattern.compile("(Consumer\\.)(.*?)(VirtualTopic\\.)", Pattern.CASE_INSENSITIVE)
+        val buffer = StringBuffer()
+        val matcher = virtualTopicPattern.matcher(uri)
+        if (matcher.find()) matcher.appendReplacement(buffer, matcher.group(3))
+        matcher.appendTail(buffer)
+        return buffer.toString()
+    }
 
     private fun resolvePropertyPlaceholders(xml: String, configs: Map<String,String>): String {
         val placeholderPattern = Pattern.compile("(\\{\\{)(.*?)(}})")

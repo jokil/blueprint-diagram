@@ -22,7 +22,7 @@ The mapping takes into consideration
 - All `<from/>`-nodes in route
 - All `<wireTap>`-nodes in route
 - All `<simple/>` and `<constant/>` -nodes in recipientList 
-- The last `<to/>`-node in route
+- All `<to/>`-nodes with colon in uri in route (colon-constraint keeps `<to uri="someProcessorBean"/>` out of the mapping.)
 
 Everything else is ignored, because this is not meant to be a complete description of the routes.
 
