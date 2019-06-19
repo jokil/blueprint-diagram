@@ -35,7 +35,7 @@ object XmlUtil {
         val outputs = elem.select("to").map { toDotEntity(it.attr("uri")) }
 
         val outputSet = wireTaps.union(recipients).toMutableSet()
-        if (outputs.isNotEmpty()) outputSet.add(outputs.last())
+        outputSet.addAll(outputs.filter { it.name.contains(":") })
 
         return CamelContext.Route(
                 name = elem.attr("id"),
